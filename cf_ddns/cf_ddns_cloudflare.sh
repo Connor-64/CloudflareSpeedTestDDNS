@@ -161,11 +161,11 @@ while [[ ${x} -lt $num ]]; do
         echo "更新失败，获取最快的IP与云端相同"
         resSuccess=false
       elif [[ $recordId = "null" ]]; then
-        res=$(curl -s -X POST "$createDnsApi" -H "X-Auth-Email:$x_email" -H "X-Auth-Key:$api_key" -H "Content-Type:application/json" --data "{\"type\":\"$recordType\",\"name\":\"$CDNhostname\",\"content\":\"$ipAddr\",\"proxied\":$proxy}")
+        res=$(curl -s -X POST "$createDnsApi" -H "X-Auth-Email:$x_email" -H "X-Auth-Key:$api_key" -H "Content-Type:application/json" --data "{\"type\":\"$recordType\",\"name\":\"$CDNhostname\",\"content\":\"$ipAddr\",\"proxied\":$proxy,\"ttl\":60}")
         resSuccess=$(echo "$res" | jq -r ".success")
       else
         updateDnsApi="https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records/${recordId}"
-        res=$(curl -s -X PUT "$updateDnsApi"  -H "X-Auth-Email:$x_email" -H "X-Auth-Key:$api_key" -H "Content-Type:application/json" --data "{\"type\":\"$recordType\",\"name\":\"$CDNhostname\",\"content\":\"$ipAddr\",\"proxied\":$proxy}")
+        res=$(curl -s -X PUT "$updateDnsApi"  -H "X-Auth-Email:$x_email" -H "X-Auth-Key:$api_key" -H "Content-Type:application/json" --data "{\"type\":\"$recordType\",\"name\":\"$CDNhostname\",\"content\":\"$ipAddr\",\"proxied\":$proxy,\"ttl\":60}")
         resSuccess=$(echo "$res" | jq -r ".success")
       fi
   
@@ -193,4 +193,3 @@ if [ "$IP_TO_HOSTS" = 1 ]; then
     rm ./cf_ddns/hosts_new
   fi
 fi
-
